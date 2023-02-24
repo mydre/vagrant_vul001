@@ -1,0 +1,23 @@
+#/bin/bash
+if [ $# -ge 1 ] && [[ $(echo $1 | grep "\.tar") != "" ]] && [ -f "./$1" ]; then
+    tar_filename=$1
+else
+    echo "please input the (or invalid) tar filename or the file does not exist!"
+    exit 0
+    tar_filename="`ls | grep ".*\.tar"`"
+fi
+src_dir="template"
+dst_dir=vul_${tar_filename%\.tar}
+if [ ! -d "./$dst_dir" ]; then
+    cp -r $src_dir $dst_dir
+else
+    echo "the directory: $dst_dir is already existing, no need to regenerate"
+    exit 0
+fi
+sed -i "s/\(\w\|-\)*\.tar/$tar_filename/g" `find . -name "*.sh"`
+# sss="vul_.\{-\} "
+# echo $sss
+echo $dst_dir
+sed -i "s/vul_\(\w\|-\)*/$dst_dir/g" `find . -name "*.sh"`
+# echo $src_dir
+# echo $dst_dir
